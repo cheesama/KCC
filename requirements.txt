@@ -1,0 +1,11 @@
+dill
+mdutils
+numpy
+pycm
+scikit-learn
+tqdm>=4.46.0
+
+#models
+pytorch-nlp
+pytorch-lightning
+transformers
