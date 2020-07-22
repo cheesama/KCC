@@ -126,7 +126,7 @@ class KcBERT_Classifier(pl.LightningModule):
         intent_acc = get_accuracy(intent_pred.argmax(1), intent_idx)[0]
         intent_f1 = f1_score(intent_pred.argmax(1), intent_idx)
 
-        if entity_idx.sum().item() == 0 or torch.tensor(entity_pred).sum().item() == 0:
+        if entity_idx.sum().item() == 0 or entity_pred.sum().item() == 0:
             entity_acc = get_token_accuracy(entity_idx.cpu(), entity_pred.argmax(2).cpu())[0]
         else:
             entity_acc = get_token_accuracy(entity_idx.cpu(), entity_pred.argmax(2).cpu(), ignore_index=self.dataset.pad_token_id)[0]
@@ -165,7 +165,7 @@ class KcBERT_Classifier(pl.LightningModule):
         intent_acc = get_accuracy(intent_pred.argmax(1), intent_idx)[0]
         intent_f1 = f1_score(intent_pred.argmax(1), intent_idx)
 
-        if entity_idx.sum().item() == 0 or torch.tensor(entity_pred).sum().item() == 0:
+        if entity_idx.sum().item() == 0 or entity_pred.sum().item() == 0:
             entity_acc = get_token_accuracy(entity_idx.cpu(), entity_pred.argmax(2).cpu())[0]
         else:
             entity_acc = get_token_accuracy(entity_idx.cpu(), entity_pred.argmax(2).cpu(), ignore_index=self.dataset.pad_token_id)[0]
