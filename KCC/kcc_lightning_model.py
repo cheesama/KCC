@@ -121,7 +121,7 @@ class KcBERT_Classifier(pl.LightningModule):
         self.model.train()
 
         tokens, intent_idx, entity_idx = batch
-        feature, intent_pred, entity_pred, entity_loss = self.forward(tokens)
+        intent_pred, entity_pred = self.forward(tokens)
 
         intent_acc = get_accuracy(intent_pred.argmax(1), intent_idx)[0]
         intent_f1 = f1_score(intent_pred.argmax(1), intent_idx)
@@ -160,7 +160,7 @@ class KcBERT_Classifier(pl.LightningModule):
         self.model.eval()
 
         tokens, intent_idx, entity_idx = batch
-        feature, intent_pred, entity_pred, entity_loss = self.forward(tokens)
+        intent_pred, entity_pred = self.forward(tokens)
 
         intent_acc = get_accuracy(intent_pred.argmax(1), intent_idx)[0]
         intent_f1 = f1_score(intent_pred.argmax(1), intent_idx)
