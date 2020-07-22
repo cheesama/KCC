@@ -121,15 +121,15 @@ class KcBERT_Classifier(pl.LightningModule):
         self.model.train()
 
         tokens, intent_idx, entity_idx = batch
-        feature, intent_pred, entity_pred, entity_loss = self.forward(tokens)
+        intent_pred, entity_pred = self.forward(tokens)
 
         intent_acc = get_accuracy(intent_pred.argmax(1), intent_idx)[0]
         intent_f1 = f1_score(intent_pred.argmax(1), intent_idx)
 
         if entity_idx.sum().item() == 0 or torch.tensor(entity_pred).sum().item() == 0:
-            entity_acc = get_token_accuracy(entity_idx.cpu(), torch.tensor(entity_pred).cpu())[0]
+            entity_acc = get_token_accuracy(entity_idx.cpu(), entity_pred.argmax(2).cpu())[0]
         else:
-            entity_acc = get_token_accuracy(entity_idx.cpu(), torch.tensor(entity_pred).cpu(), ignore_index=self.dataset.pad_token_id)[0]
+            entity_acc = get_token_accuracy(entity_idx.cpu(), entity_pred.argmax(2).cpu(), ignore_index=self.dataset.pad_token_id)[0]
 
         tensorboard_logs = {
             "train/intent/acc": intent_acc,
@@ -160,15 +160,15 @@ class KcBERT_Classifier(pl.LightningModule):
         self.model.eval()
 
         tokens, intent_idx, entity_idx = batch
-        feature, intent_pred, entity_pred, entity_loss = self.forward(tokens)
+        intent_pred, entity_pred = self.forward(tokens)
 
         intent_acc = get_accuracy(intent_pred.argmax(1), intent_idx)[0]
         intent_f1 = f1_score(intent_pred.argmax(1), intent_idx)
 
         if entity_idx.sum().item() == 0 or torch.tensor(entity_pred).sum().item() == 0:
-            entity_acc = get_token_accuracy(entity_idx.cpu(), torch.tensor(entity_pred).cpu())[0]
+            entity_acc = get_token_accuracy(entity_idx.cpu(), entity_pred.argmax(2).cpu())[0]
         else:
-            entity_acc = get_token_accuracy(entity_idx.cpu(), torch.tensor(entity_pred).cpu(), ignore_index=self.dataset.pad_token_id)[0]
+            entity_acc = get_token_accuracy(entity_idx.cpu(), entity_pred.argmax(2).cpu(), ignore_index=self.dataset.pad_token_id)[0]
 
         intent_loss = self.intent_loss_fn(intent_pred, intent_idx.long(),)
         entity_loss = self.entity_loss_fn(entity_pred.transpose(1, 2), entity_idx.long(),)
