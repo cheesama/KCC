@@ -23,7 +23,7 @@ class KcBERT_FineTuner(nn.Module):
         attention_mask = (tokens != self.pad_token_id).type_as(tokens).float()
         position_ids = torch.arange(self.max_seq_len).repeat(tokens.size(0), 1).type_as(tokens)
 
-        feature = self.backbone(tokens, attention_mask=attention_mask, position_ids=position_ids)
+        feature = self.backbone(tokens, attention_mask=attention_mask, position_ids=position_ids)[0]
 
         intent_pred = self.intent_embedding(feature[:,0,:]) #forward only first [CLS] token
         entity_pred = self.entity_embedding(feature[:,1:,:]) #except first [CLS] token
