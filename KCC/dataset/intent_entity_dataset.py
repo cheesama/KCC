@@ -180,7 +180,7 @@ class RasaIntentEntityDataset(torch.utils.data.Dataset):
 
         intent_idx = self.dataset[idx]['intent_idx']
 
-        entity_idx = [0] * len(tokens) # O tag indicate 0(zero)
+        entity_idx = [0] * self.tokenizer.max_len # O tag indicate 0(zero)
 
         for entity_info in self.dataset[idx]["entities"]:
             ##check whether entity value is include in splitted token
@@ -196,7 +196,6 @@ class RasaIntentEntityDataset(torch.utils.data.Dataset):
 
         if padding:
             token_ids = token_ids + ([self.pad_token_id] * (self.tokenizer.max_len - len(token_ids)))
-            entity_idx = entity_idx + ([self.pad_token_id] * (self.tokenizer.max_len - len(entity_idx)))
 
         token_ids = torch.from_numpy(np.array(token_ids))
         intent_idx = torch.from_numpy(np.array(intent_idx))
