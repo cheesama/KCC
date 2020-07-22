@@ -1,0 +1,39 @@
+# This workflow will install Python dependencies, run tests and lint with a single version of Python
+# For more information see: https://help.github.com/actions/language-and-framework-guides/using-python-with-github-actions
+
+name: Training Model
+
+on:
+  #push:
+    #branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container: docker://dvcorg/cml-py3:latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Install Azure CLI
+      run: |
+        apt-get update && apt-get install -y curl python3-setuptools apt-transport-https vim gnupg2 unzip wget jq
+        curl -sL https://aka.ms/InstallAzureCLIDeb | bash
+    - name: Azure Login
+      uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+    - name: Train Model
+      env:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          TB_CREDENTIALS: ${{ secrets.TB_CREDENTIALS }}
+      run: |
+          #az storage blob upload --help
+          pip3 install --upgrade pip
+          pip3 install -r requirements.txt
+          pip3 install .
+          cml-tensorboard-dev --logdir tests/lightning_logs --md --name "Go to tensorboard" >> report.md
+          cml-send-comment report.md
+          cd tests && wget ${{ secrets.NLU_FILE_PATH }} && pwd && python3 train_kcc_model.py
