@@ -29,7 +29,7 @@ def train(
     checkpoint_callback = model_checkpoint.ModelCheckpoint(prefix=checkpoint_prefix)
 
     prepare_data_per_node=True
-    if gpus != 0: prepare_data_per_node=False
+    if gpu_num != 0: prepare_data_per_node=False
 
     if batch_size is None:
         trainer = Trainer(
