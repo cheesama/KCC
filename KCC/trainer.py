@@ -40,7 +40,7 @@ def train(
             early_stop_callback=early_stopping,
             callbacks=[lr_logger],
             checkpoint_callback=checkpoint_callback,
-            prepare_data_node=prepare_data_node
+            prepare_data_per_node=prepare_data_per_node
         )
     else:
         trainer = Trainer(
@@ -50,7 +50,7 @@ def train(
             early_stop_callback=early_stopping,
             callbacks=[lr_logger],
             checkpoint_callback=checkpoint_callback,
-            prepare_data_node=prepare_data_node
+            prepare_data_per_node=prepare_data_per_node
         )
 
     model_args = {}
